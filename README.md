@@ -9,6 +9,7 @@ Simply score in the nearest high basket with a pre-loaded specimen and then park
 
 Each tile is worth 610mm
 THE SLIDE IS = EACH ENCODER COUNT = 0.436MM!
+The Robot is 420x420 in dimensions, keep that in mind.
 
 ![Sam's in ITH performing](https://assets.playbill.com/playbill-covers/7e1232ab6830bd766a5e228c844a6c33-in-the-heights-playbill-2008-02-14-web.jpg)
 
