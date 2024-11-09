@@ -3,6 +3,8 @@ Main codebase for 19812 and 23796 during the INTO-THE-DEEP season.
 
 ## Work For 11/9-14
 
+![Sam's in ITH performing](https://assets.playbill.com/playbill-covers/7e1232ab6830bd766a5e228c844a6c33-in-the-heights-playbill-2008-02-14-web.jpg)
+
 ## Member Computer #s
 Charles (Breathing01) - Personal or 24 <br>
 Nav (lmaoNebula) - "20" <br>
