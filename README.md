@@ -10,6 +10,7 @@ Simply score in the nearest high basket with a pre-loaded specimen and then park
 Each tile is worth 610mm
 The Robot is 420x420 in dimensions, keep that in mind.
 
+https://www.firstinspires.org/resource-library/ftc/game-and-season-info < go here
 
 ## Member Computer #s
 Charles (Breathing01) - Personal or 24 <br>
