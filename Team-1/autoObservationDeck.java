@@ -13,6 +13,23 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 public class AutonomousSutra extends LinearOpMode {
+
+    private ElapsedTime runtime = new ElapsedTime();
+    private DcMotor leftFrontDrive = null;
+    private DcMotor leftBackDrive = null;
+    private DcMotor rightFrontDrive = null;
+    private DcMotor rightBackDrive = null;
+    private DcMotor slideArm = null;
+    private DcMotor intakePivotMotor = null;
+    private CRServo intakeServo = null;
+    private int clawState = 1;
+    private double slideArmCD = 0.0;
+    private double clawCD = 0.0;
+    private double motorPosition = 0.0;
+    private double pivotIntakeMotorPower = 0.0;
+    private boolean slowMode = false;
+    private double slowModeCD = 0.0;
+
     // Math for wheel movement
     private final double wheelCircumference = 75*3.14;
     private final double gearReduction = 3.61*5.23;
@@ -27,6 +44,23 @@ public class AutonomousSutra extends LinearOpMode {
     @Override
     public void runOpMode() {
         
+        leftFrontDrive  = hardwareMap.get(DcMotor.class, "frontLeft");
+        leftBackDrive  = hardwareMap.get(DcMotor.class, "backLeft");
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "frontRight");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "backRight");
+        slideArm = hardwareMap.get(DcMotor.class, "slideMotor");
+        intakeServo = hardwareMap.get(CRServo.class, "intakeServo");
+        intakePivotMotor = hardwareMap.get(DcMotor.class, "intakePivotMotor");
+
+        rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
+        
+        waitForStart();
+        runtime.reset();
+
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
 
@@ -205,16 +239,18 @@ public class AutonomousSutra extends LinearOpMode {
         intakePivotMotor.setPower(0.3); //anti-grav power
 
 
-        upperServo.setPower(1.0);
-        lowerServo.setPower(-1.0);
+       intakeServo.setPower(-0.1)
 
         sleep(3000);
         intakePivotMotor.setPower(0.7);
+        sleep(500);
+        intakePivotMotor.setPower(0.0);
 
         //this is where the scoring thing stops
         backEncoders(300);
         slideMotor.setTargetPosition(0.0); // arm down from basket
         slideMotor.setVelocity(1500); //idk sam said to put it
+        intakeServo.setPower(0.0);
         turnRight(135);
         rightEncoders(3050);
         backEncoders(610);
@@ -238,16 +274,17 @@ public class AutonomousSutra extends LinearOpMode {
         intakePivotMotor.setPower(0.3); //anti-grav power
 
 
-        upperServo.setPower(1.0);
-        lowerServo.setPower(-1.0);
+        intakeServo.setPower(-1.0);
 
         sleep(3000);
         intakePivotMotor.setPower(0.7);
-
+        sleep(500);
+        intakePivotMotor.setPower(0.0);
         //this is where the scoring thing stops
         backEncoders(300);
         slideMotor.setTargetPosition(0.0); // arm down from basket
         slideMotor.setVelocity(1500); //idk sam said to put it
+        intakeServo.setPower(0.0);
         turnRight(135);
         rightEncoders(3050);
         backEncoders(610);
