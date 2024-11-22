@@ -25,7 +25,23 @@ public class AutonomousSutra extends LinearOpMode {
     private final double inches = revPerMM*25.4;
 
     // Declare OpMode members for each of the moving parts.
-
+    private ElapsedTime runtime = new ElapsedTime();
+    private DcMotor leftFrontDrive = null;
+    private DcMotor leftBackDrive = null;
+    private DcMotor rightFrontDrive = null;
+    private DcMotor rightBackDrive = null;
+    private DcMotor slideArm = null;
+    private DcMotor intakePivotMotor = null;
+    private CRServo intakeServo = null;
+    private int clawState = 1;
+    private double slideArmCD = 0.0;
+    private double clawCD = 0.0;
+    LinearSlideStates2 slideArmState = LinearSlideStates2.HoldingTwo;
+    private double motorPosition = 0.0;
+    private double pivotIntakeMotorPower = 0.0;
+    private boolean slowMode = false;
+    private double slowModeCD = 0.0;
+    private int stopCount = 0;
     @Override
     public void runOpMode() {
         
@@ -43,7 +59,25 @@ public class AutonomousSutra extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()&&count==0) {
             // Gallop on Rocinante!!!
+            while (stopCount <= 3) {
+                pivotPos(200);
+                sleep(500);
+                pivotPos(-200);
+                sleep(500);
+                stopCount++;
+            }
+            
             count++;
+        }
+    }
+    public void pivotPos(double position) 
+    {
+        intakePivotMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        intakePivotMotor.setTargetPosition(position);
+        intakePivotMotor.setVelocity(750);
+        intakePivotMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        while(intakePivotMotor.isBusy) {
+            //OH MY GOD SEHWAN I'M CLOSE I'M SO CLOSE i m cumm ng
         }
     }
     public void input(double leftFront, double rightFront, double leftBack, double rightBack)
