@@ -188,25 +188,33 @@ public class AutonomousSutra extends LinearOpMode {
         input(0, 0, 0, 0);
     }
     public void longbasketnavsucks(){
-
-    
         linearSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); //idk sam said to put it
+    
+        
         linearSlide.setTargetPosition(-3100); // arm up to basket
         linearSlide.setVelocity(1500); //idk sam said to put it
+        linearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION); //idk sam said to put it
         while (linearSlide.isBusy()){
         }
-        linearSlide.setPower(0);
-        intakePivotMotor.setPower(0.5);
-        while(intakePivotMotor.isBusy()){
-        }
+        linearSlide.setVelocity(0);
+        intakePivotMotor.setPower(-0.5);
+        sleep(400);
+        intakePivotMotor.setPower(0.3);
+
         upperServo.setPower(1.0);
         lowerServo.setPower(-1.0);
         sleep(3000);
-        intakePivotMotor.setPower(0.3);
+        intakePivotMotor.setPower(1.0);
+        sleep(500);
+        intakePivotMotor.setPower(0.0);
         //put the arm down. this is for my safety
         slideMotor.setTargetPosition(0);
-        intakePivotMotor.setPower(1);      
+        linearSlide.setVelocity(1500);
+        linearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION); //idk sam said to put it
+        while(linearSlide.isBusy()){
+        }    
         //this is where the scoring thing stops
         backEncoders(2135);
     }
 }
+// for pull origin
