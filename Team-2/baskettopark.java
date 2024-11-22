@@ -1,6 +1,7 @@
 package RobotCode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -8,54 +9,41 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Autonomous Long Basket Park", group="Linear Opmode")
+@Autonomous(name="", group="Linear Opmode")
 
-public class AutoLongBasket extends LinearOpMode {
+
+public class AutonomousSutra extends LinearOpMode {
+    // Math for wheel movement
     private final double wheelCircumference = 75*3.14;
     private final double gearReduction = 3.61*5.23;
     private final double counts = 28.0;
-
+    
     private final double rev = counts*gearReduction;
     private final int revPerMM = (int)rev/(int)wheelCircumference;
     private final double inches = revPerMM*25.4;
 
-    // Declare OpMode members for each of the 4 motors.
-    private ElapsedTime runtime = new ElapsedTime();
-    private DcMotorEx leftFrontDrive = null;
-    private DcMotorEx leftBackDrive = null;
-    private DcMotorEx rightFrontDrive = null;
-    private DcMotorEx rightBackDrive = null;
-    private DcMotor clawPivotMotor = null;
-    private CRServo upperServo = null;
-    private CRServo lowerServo = null;
-    
+    // Declare OpMode members for each of the moving parts.
+
     @Override
-    
     public void runOpMode() {
-        leftFrontDrive  = hardwareMap.get(DcMotorEx.class, "fLeft");
-        leftBackDrive  = hardwareMap.get(DcMotorEx.class, "bLeft");
-        rightFrontDrive = hardwareMap.get(DcMotorEx.class, "fRight");
-        rightBackDrive = hardwareMap.get(DcMotorEx.class, "bRight");
-        clawPivotMotor = hardwareMap.get(DcMotor.class, "intakePivotMotor");
-        upperServo = hardwareMap.get(CRServo.class, "topIntake");
-        lowerServo = hardwareMap.get(CRServo.class, "bottomIntake");
         
+        // Initialize the hardware variables. Note that the strings used here must correspond
+        // to the names assigned during the robot configuration step on the DS or RC devices.
 
-        leftFrontDrive.setDirection(DcMotorEx.Direction.REVERSE);
-        leftBackDrive.setDirection(DcMotorEx.Direction.REVERSE);
-
-         // Wait for the game to start (driver presses PLAY)
+        // Set Directions
+        
+        // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-        int runCount=0;
+        int count=0;
         waitForStart();
         runtime.reset();
-
-
+        // run until the end of the match (driver presses STOP)
+        while (opModeIsActive()&&count==0) {
+            // Gallop on Rocinante!!!
+            count++;
+        }
     }
-
-// vvvvvvvvvvvvvvvvvvvv THIS IS WHERE THE FUNCTIONS ARE vvvvvvvvvvvvvvvvvvvv
-
     public void input(double leftFront, double rightFront, double leftBack, double rightBack)
     {
         leftFrontDrive.setPower(leftFront);
@@ -106,6 +94,10 @@ public class AutoLongBasket extends LinearOpMode {
     {
         encoders(0, -target, -target, 0);
     }
+
+    // Encoders is a function that makes the four wheels move in a direction by the distance inputted. (100, 100, 0, 0) would make lF and rF go 100mm forwards.
+    // The rest of the movement functions rely on this!!!
+
     public void encoders(int leftFront, int rightFront, int leftBack, int rightBack)
     {
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -135,6 +127,25 @@ public class AutoLongBasket extends LinearOpMode {
         rightFrontDrive.setPower(0);
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
+    }
+    //THIS PART DOWNWARDS ONLY SETS POWER, NOT POSITION
+    public void servoPower(double power)
+    {
+        leftServo.setPower(power);
+        rightServo.setPower(power);
+    }
+    public void armHold()
+    {
+        rightArm.setPower(-0.1);
+        leftArm.setPower(0.1);
+    }
+    public void armUp(){
+        rightArm.setPower(-0.7);
+        leftArm.setPower(0.7);
+    }
+    public void setTheArmPowersToZeroSoTheyFallAndAreStoppedByTheHardstop(){
+        rightArm.setPower(0.0);
+        leftArm.setPower(0.0);
     }
     public void drive()
     {
@@ -176,18 +187,15 @@ public class AutoLongBasket extends LinearOpMode {
     {
         input(0, 0, 0, 0);
     }
-    public void basket(){
-        turnLeft(90);
-        driveEncoders(2135);
-        rightEncoders(305);
-        turnLeft(45);
-        // arm to score thing here
-        slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); //idk sam said to put it
-        slideMotor.setTargetPosition(-3100); // arm up to basket
-        slideMotor.setVelocity(1500); //idk sam said to put it
-        while (slideMotor.isBusy()){
+    public void longbasketnavsucks(){
+
+    
+        linearSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); //idk sam said to put it
+        linearSlide.setTargetPosition(-3100); // arm up to basket
+        linearSlide.setVelocity(1500); //idk sam said to put it
+        while (linearSlide.isBusy()){
         }
-        slideArm.setPower(0);
+        linearSlide.setPower(0);
         intakePivotMotor.setPower(0.5);
         while(intakePivotMotor.isBusy()){
         }
@@ -201,26 +209,4 @@ public class AutoLongBasket extends LinearOpMode {
         //this is where the scoring thing stops
         backEncoders(2135);
     }
-    public void observation(){
-        turnLeft(90);
-        driveEncoders(305);
-        rightEncoders(305);
-        turnLeft(45);
-        // arm to score thing here
-        slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); //idk sam said to put it
-        slideMotor.setTargetPosition(2505); // arm up to basket
-        slideMotor.setVelocity(1500); //idk sam said to put it
-        while (slideMotor.isBusy()){
-        }
-        slideArm.setPower(0);
-        intakePivotMotor.setPower(0.5);
-        while(intakePivotMotor.isBusy()){
-        }
-        upperServo.setPower(1.0);
-        lowerServo.setPower(-1.0);
-        sleep(3000);
-        intakePivotMotor.setPower(0.3);
-        //this is where the scoring thing stops
-        backEncoders(2135);
-     }
 }
