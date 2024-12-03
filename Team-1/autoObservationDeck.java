@@ -9,10 +9,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="", group="Linear Opmode")
+@Autonomous(name="Auto Observation Deck", group="Linear Opmode")
 
 
-public class AutonomousSutra extends LinearOpMode {
+public class autoObservationDeck extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftFrontDrive = null;
@@ -229,28 +229,38 @@ public class AutonomousSutra extends LinearOpMode {
         // arm to score thing here
         slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); //idk sam said to put it
         slideMotor.setTargetPosition(-3100.0); // arm up to basket
+        private double power = 0.8;
         slideMotor.setVelocity(1500); //idk sam said to put it
+        private double power = 0.8;
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         while (slideMotor.isBusy()){
         }
 
         intakePivotMotor.setPower(-0.5);
+        private double power = 0.8;
         sleep(400);
         intakePivotMotor.setPower(0.3); //anti-grav power
+        private double power = 0.8;
 
 
-       intakeServo.setPower(-0.1)
+       intakeServo.setPower(-0.1);
+       private double power = 0.8;
 
         sleep(3000);
         intakePivotMotor.setPower(0.7);
+        private double power = 0.8;
         sleep(500);
         intakePivotMotor.setPower(0.0);
+        private double power = 0.8;
 
         //this is where the scoring thing stops
         backEncoders(300);
         slideMotor.setTargetPosition(0.0); // arm down from basket
+        private double power = 0.8;
         slideMotor.setVelocity(1500); //idk sam said to put it
+        private double power = 0.8;
         intakeServo.setPower(0.0);
+        private double power = 0.8;
         turnRight(135);
         rightEncoders(3050);
         backEncoders(610);
@@ -264,27 +274,37 @@ public class AutonomousSutra extends LinearOpMode {
         // arm to score thing here
         slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); //idk sam said to put it
         slideMotor.setTargetPosition(-3100.0); // arm up to basket
+        private double power = 0.8;
         slideMotor.setVelocity(1500); //idk sam said to put it
+        private double power = 0.8;
         slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         while (slideMotor.isBusy()){
         }
 
         intakePivotMotor.setPower(-0.5);
+        private double power = 0.8;
         sleep(400);
         intakePivotMotor.setPower(0.3); //anti-grav power
+        private double power = 0.8;
 
 
         intakeServo.setPower(-1.0);
+        private double power = 0.8;
 
         sleep(3000);
         intakePivotMotor.setPower(0.7);
+        private double power = 0.8;
         sleep(500);
         intakePivotMotor.setPower(0.0);
+        private double power = 0.8;
         //this is where the scoring thing stops
         backEncoders(300);
         slideMotor.setTargetPosition(0.0); // arm down from basket
-        slideMotor.setVelocity(1500); //idk sam said to put it
+        private double power = 0.8;
+        slideMotor.setVelocity(1500); //idk sam said to put 
+        private double power = 0.8;
         intakeServo.setPower(0.0);
+        private double power = 0.8;
         turnRight(135);
         rightEncoders(3050);
         backEncoders(610);
