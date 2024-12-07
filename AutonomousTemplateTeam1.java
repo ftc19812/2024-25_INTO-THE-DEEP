@@ -15,6 +15,17 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 public class AutonomousSutra extends LinearOpMode {
+
+    // Declare OpMode members for each of the 4 motors.
+    private ElapsedTime runtime = new ElapsedTime();
+    private DcMotorEx leftFrontDrive = null;
+    private DcMotorEx leftBackDrive = null;
+    private DcMotorEx rightFrontDrive = null;
+    private DcMotorEx rightBackDrive = null;
+    private DcMotor slideArm = null;
+    private DcMotor intakePivotMotor = null;
+    private CRServo intakeServo = null;
+
     // Math for wheel movement
     private final double wheelCircumference = 75*3.14;
     private final double gearReduction = 3.61*5.23;
@@ -32,8 +43,22 @@ public class AutonomousSutra extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
 
+        leftFrontDrive  = hardwareMap.get(DcMotor.class, "frontLeft");
+        leftBackDrive  = hardwareMap.get(DcMotor.class, "backLeft");
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "frontRight");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "backRight");
+        slideArm = hardwareMap.get(DcMotor.class, "slideMotor");
+        intakeServo = hardwareMap.get(CRServo.class, "intakeServo");
+        intakePivotMotor = hardwareMap.get(DcMotor.class, "intakePivotMotor");
+
         // Set Directions
         
+        rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        
+        slideArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slideArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
+
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -130,63 +155,36 @@ public class AutonomousSutra extends LinearOpMode {
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
     }
-    //THIS PART DOWNWARDS ONLY SETS POWER, NOT POSITION
-    public void servoPower(double power)
+
+    public void linearSlideEncoders(int goalPos)
     {
-        leftServo.setPower(power);
-        rightServo.setPower(power);
+        slideArm.setTargetPosition(goalPos);
+        slideArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        while (opModeIsActive()&&slideArm.isBusy())
+        {
+        }
+
+        slideArm.setPower(0);
     }
-    public void armHold()
+
+    public void intakeEncoders(String state)
     {
-        rightArm.setPower(-0.1);
-        leftArm.setPower(0.1);
+        if(state == "In"){
+            intakeServo.setPower(-1.0);
+        } else if(state == "Out"){
+            intakeServo.setPower(1.0);
+        }
     }
-    public void armUp(){
-        rightArm.setPower(-0.7);
-        leftArm.setPower(0.7);
-    }
-    public void setTheArmPowersToZeroSoTheyFallAndAreStoppedByTheHardstop(){
-        rightArm.setPower(0.0);
-        leftArm.setPower(0.0);
-    }
-    public void drive()
+
+    public void intakePivotEncoders(String state)
     {
-        leftFrontDrive.setPower(1.0);
-        rightFrontDrive.setPower(1.0);
-        leftBackDrive.setPower(1.0);
-        rightBackDrive.setPower(1.0);
-        //input(0.4, 0.4, 0.4, 0.4);
-    }
-    public void topRight()
-    {
-        input(0.4, 0, 0, 0.4);
-    }
-    public void right()
-    {
-        input(0.4, -0.4, -0.4, 0.4);
-    }
-    public void bottomRight()
-    {
-        input(0, -0.4, -0.4, 0);
-    }
-    public void back()
-    {
-        input(-0.4, -0.4, -0.4, -0.4);
-    }
-    public void bottomLeft()
-    {
-        input(-0.4, 0, 0, -0.4);
-    }
-    public void left()
-    {
-        input(-0.4, 0.4, 0.4, -0.4);   
-    }
-    public void topLeft()
-    {
-        input(0, 0.4, 0.4, 0);
-    }
-    public void stop(double time)
-    {
-        input(0, 0, 0, 0);
+        if(state == "Up"){
+            intakePivotMotor.setPower(0.4);
+        } else if (state == "Down"){
+            intakePivotMotor.setPower(-0.55);
+        } else if (state == "Hold"){
+            intakePivotMotor.setPower(0.2);
+        }
     }
 }
