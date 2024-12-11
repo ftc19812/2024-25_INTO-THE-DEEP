@@ -11,10 +11,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 
-@Autonomous(name="Team 1 Autonomous", group="Linear Opmode")
+@Autonomous(name="", group="Linear Opmode")
 
 
-public class team1Autonomous extends LinearOpMode {
+public class AutonomousSutra extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
@@ -23,6 +23,7 @@ public class team1Autonomous extends LinearOpMode {
     private DcMotorEx rightFrontDrive = null;
     private DcMotorEx rightBackDrive = null;
     private DcMotor slideArm = null;
+    private DcMotor intakePivotMotor = null;
     private CRServo intakeServo = null;
 
     // Math for wheel movement
@@ -48,6 +49,7 @@ public class team1Autonomous extends LinearOpMode {
         rightBackDrive = hardwareMap.get(DcMotor.class, "backRight");
         slideArm = hardwareMap.get(DcMotor.class, "slideMotor");
         intakeServo = hardwareMap.get(CRServo.class, "intakeServo");
+        intakePivotMotor = hardwareMap.get(DcMotor.class, "intakePivotMotor");
 
         // Set Directions
         
@@ -172,6 +174,8 @@ public class team1Autonomous extends LinearOpMode {
             intakeServo.setPower(-1.0);
         } else if(state == "Out"){
             intakeServo.setPower(1.0);
+        } else if(state == "Stop"){
+            intakeServo.setPower(0.0);
         }
     }
 
@@ -185,21 +189,34 @@ public class team1Autonomous extends LinearOpMode {
             intakePivotMotor.setPower(0.2);
         }
     }
-    
-    public void basket()
+
+    //sam this is the part you read
+    //vvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+
+        public void basket()
     {
         leftEncoders(1220);
         turnLeft(135);
-        //score start
-        slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); //idk sam said to put it
-        slideMotor.setTargetPosition(-3100.0); // arm up to basket
-        private double power = 0.8;
-        slideMotor.setVelocity(1500); //idk sam said to put it
-        private double power = 0.8;
-        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        while (slideMotor.isBusy()){
+
+        //score start :o
+        linearSlideEncoders(-3000);
+        while(slideArm.isBusy)
+        {
         }
-        //ASK SAM HOW TO PUT THE SLIDE MOTOR TO STAY UP
+        intakePivotEncoders("Up");
+        sleep(700);
+        intakePivotEncoders("Hold");
+        intakeEncoders("Out");
+        sleep(500);
+        intakeEncoders("Stop");
+        linearSlideEncoders(0);
+        while(slideArm.isBusy)
+        {
+        }
+        //score end :)
+
+        
 
         intakeServo.setPower(-1.0);
         sleep(5000);
@@ -214,16 +231,25 @@ public class team1Autonomous extends LinearOpMode {
     {
         leftEncoders(1830);
         turnLeft(135);
-        //score start
-        slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER); //idk sam said to put it
-        slideMotor.setTargetPosition(-3100.0); // arm up to basket
-        private double power = 0.8;
-        slideMotor.setVelocity(1500); //idk sam said to put it
-        private double power = 0.8;
-        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        while (slideMotor.isBusy()){
+
+        //score start :o
+        linearSlideEncoders(-3000);
+        while(slideArm.isBusy)
+        {
         }
-        //ASK SAM HOW TO PUT THE SLIDE MOTOR TO STAY UP
+        intakePivotEncoders("Up");
+        sleep(700);
+        intakePivotEncoders("Hold");
+        intakeEncoders("Out");
+        sleep(500);
+        intakeEncoders("Stop");
+        linearSlideEncoders(0);
+        while(slideArm.isBusy)
+        {
+        }
+        //score end :)
+        
+
 
         intakeServo.setPower(-1.0);
         sleep(5000);
