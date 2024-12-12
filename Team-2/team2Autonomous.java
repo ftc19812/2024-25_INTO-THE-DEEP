@@ -11,20 +11,21 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 
-@Autonomous(name="Team 1 Auto", group="Linear Opmode")
+@Autonomous(name="Team 2 Autonomous", group="Linear Opmode")
 
 
-public class team1Autonomous extends LinearOpMode {
+public class team2Autonomous extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotorEx leftFrontDrive = null;
-    private DcMotorEx leftBackDrive = null;
-    private DcMotorEx rightFrontDrive = null;
-    private DcMotorEx rightBackDrive = null;
+    private DcMotor leftFrontDrive = null;
+    private DcMotor leftBackDrive = null;
+    private DcMotor rightFrontDrive = null;
+    private DcMotor rightBackDrive = null;
     private DcMotor slideArm = null;
     private DcMotor intakePivotMotor = null;
-    private CRServo intakeServo = null;
+    private CRServo upperServo = null;
+    private CRServo lowerServo = null;
 
     // Math for wheel movement
     private final double wheelCircumference = 75*3.14;
@@ -43,17 +44,18 @@ public class team1Autonomous extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
 
-        leftFrontDrive  = hardwareMap.get(DcMotor.class, "frontLeft");
-        leftBackDrive  = hardwareMap.get(DcMotor.class, "backLeft");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "frontRight");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "backRight");
+        leftFrontDrive  = hardwareMap.get(DcMotor.class, "fLeft");
+        leftBackDrive  = hardwareMap.get(DcMotor.class, "bLeft");
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "fRight");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "bRight");
         slideArm = hardwareMap.get(DcMotor.class, "slideMotor");
-        intakeServo = hardwareMap.get(CRServo.class, "intakeServo");
+        upperServo = hardwareMap.get(CRServo.class, "topIntake");
+        lowerServo = hardwareMap.get(CRServo.class, "bottomIntake");
         intakePivotMotor = hardwareMap.get(DcMotor.class, "intakePivotMotor");
 
         // Set Directions
         
-        rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         
         slideArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -171,11 +173,14 @@ public class team1Autonomous extends LinearOpMode {
     public void intakeEncoders(String state)
     {
         if(state == "In"){
-            intakeServo.setPower(-1.0);
+            upperServo.setPower(1.0);
+            lowerServo.setPower(-1.0);
         } else if(state == "Out"){
-            intakeServo.setPower(1.0);
+            upperServo.setPower(-1.0);
+            lowerServo.setPower(1.0);
         } else if(state == "Stop"){
-            intakeServo.setPower(0.0);
+            upperServo.setPower(0.0);
+            lowerServo.setPower(0.0);
         }
     }
 
@@ -186,14 +191,10 @@ public class team1Autonomous extends LinearOpMode {
         } else if (state == "Down"){
             intakePivotMotor.setPower(-0.55);
         } else if (state == "Hold"){
-            intakePivotMotor.setPower(0.2);
+            intakePivotMotor.setPower(0.3);
         }
     }
-
-    //sam this is the part you read
-    //vvvvvvvvvvvvvvvvvvvvvvvvvvvv
-
-
+    
     public void basket()
     {
         leftEncoders(1220);
