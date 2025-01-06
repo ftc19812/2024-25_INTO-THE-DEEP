@@ -1,3 +1,4 @@
+
 package RobotCode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -9,22 +10,26 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+@Autonomous(name="Team 1 Autonomous", group="Linear Opmode")
 
 
-@Autonomous(name="Team 1 Auto", group="Linear Opmode")
+public class Team1Auto extends LinearOpMode {
 
-
-public class team1Autonomous extends LinearOpMode {
-
-    // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotorEx leftFrontDrive = null;
     private DcMotorEx leftBackDrive = null;
     private DcMotorEx rightFrontDrive = null;
     private DcMotorEx rightBackDrive = null;
-    private DcMotor slideArm = null;
-    private DcMotor intakePivotMotor = null;
+    private DcMotorEx slideMotor = null;
+    private DcMotorEx intakePivotMotor = null;
     private CRServo intakeServo = null;
+    private int clawState = 1;
+    private double slideMotorCD = 0.0;
+    private double clawCD = 0.0;
+    private double motorPosition = 0.0;
+    private double pivotIntakeMotorPower = 0.0;
+    private boolean slowMode = false;
+    private double slowModeCD = 0.0;
 
     // Math for wheel movement
     private final double wheelCircumference = 75*3.14;
@@ -40,25 +45,28 @@ public class team1Autonomous extends LinearOpMode {
     @Override
     public void runOpMode() {
         
+        leftFrontDrive  = hardwareMap.get(DcMotorEx.class, "frontLeft");
+        leftBackDrive  = hardwareMap.get(DcMotorEx.class, "backLeft");
+        rightFrontDrive = hardwareMap.get(DcMotorEx.class, "frontRight");
+        rightBackDrive = hardwareMap.get(DcMotorEx.class, "backRight");
+        slideMotor = hardwareMap.get(DcMotorEx.class, "slideMotor");
+        intakeServo = hardwareMap.get(CRServo.class, "intakeServo");
+        intakePivotMotor = hardwareMap.get(DcMotorEx.class, "intakePivotMotor");
+
+        rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
+        
+        waitForStart();
+        runtime.reset();
+
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
 
-        leftFrontDrive  = hardwareMap.get(DcMotor.class, "frontLeft");
-        leftBackDrive  = hardwareMap.get(DcMotor.class, "backLeft");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "frontRight");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "backRight");
-        slideArm = hardwareMap.get(DcMotor.class, "slideMotor");
-        intakeServo = hardwareMap.get(CRServo.class, "intakeServo");
-        intakePivotMotor = hardwareMap.get(DcMotor.class, "intakePivotMotor");
-
         // Set Directions
         
-        rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        
-        slideArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        slideArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
-
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -68,6 +76,7 @@ public class team1Autonomous extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()&&count==0) {
             // Gallop on Rocinante!!!
+            basket();
             count++;
         }
     }
@@ -79,12 +88,12 @@ public class team1Autonomous extends LinearOpMode {
         rightBackDrive.setPower(rightBack);
         sleep(500);
     }
-    public void turnLeft(int angle)
+    public void turnRight(int angle)
     {
         int convert=revPerMM*angle*(38/10)+(angle*12/10);
         encoders(-convert, convert, -convert, convert);
     }
-    public void turnRight(int angle)
+    public void turnLeft(int angle)
     {
         int convert=revPerMM*angle*(38/10)+(angle*12/10);
         encoders(convert, -convert, convert, -convert);
@@ -97,11 +106,11 @@ public class team1Autonomous extends LinearOpMode {
     {
         encoders(-target, -target, -target, -target);
     }
-    public void rightEncoders(int target)
+    public void leftEncoders(int target)
     {
         encoders(target, -target, -target, target);
     }
-    public void leftEncoders(int target)
+    public void rightEncoders(int target)
     {
         encoders(-target, target, target, -target);
     }
@@ -155,17 +164,63 @@ public class team1Autonomous extends LinearOpMode {
         leftBackDrive.setPower(0);
         rightBackDrive.setPower(0);
     }
+    //THIS PART DOWNWARDS ONLY SETS POWER, NOT POSITION
 
+    public void drive()
+    {
+        leftFrontDrive.setPower(1.0);
+        rightFrontDrive.setPower(1.0);
+        leftBackDrive.setPower(1.0);
+        rightBackDrive.setPower(1.0);
+        //input(0.4, 0.4, 0.4, 0.4);
+    }
+    public void topRight()
+    {
+        input(0.4, 0, 0, 0.4);
+    }
+    public void right()
+    {
+        input(0.4, -0.4, -0.4, 0.4);
+    }
+    public void bottomRight()
+    {
+        input(0, -0.4, -0.4, 0);
+    }
+    public void back()
+    {
+        input(-0.4, -0.4, -0.4, -0.4);
+    }
+    public void bottomLeft()
+    {
+        input(-0.4, 0, 0, -0.4);
+    }
+    public void left()
+    {
+        input(-0.4, 0.4, 0.4, -0.4);   
+    }
+    public void topLeft()
+    {
+        input(0, 0.4, 0.4, 0);
+    }
+    public void stop(double time)
+    {
+        input(0, 0, 0, 0);
+    }
     public void linearSlideEncoders(int goalPos)
     {
-        slideArm.setTargetPosition(goalPos);
-        slideArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        while (opModeIsActive()&&slideArm.isBusy())
+        slideMotor.setTargetPosition(goalPos);
+        slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        
+        double power=0.2;
+        
+        slideMotor.setVelocity(1500);
+        
+        
+        while (opModeIsActive()&&slideMotor.isBusy())
         {
         }
 
-        slideArm.setPower(0);
+        slideMotor.setPower(0);
     }
 
     public void intakeEncoders(String state)
@@ -179,73 +234,85 @@ public class team1Autonomous extends LinearOpMode {
         }
     }
 
-    public void intakePivotEncoders(String state)
+    public void intakePivotEncoders(String states)
     {
-        if(state == "Up"){
+        if(states == "Up"){
             intakePivotMotor.setPower(0.4);
-        } else if (state == "Down"){
-            intakePivotMotor.setPower(-0.55);
-        } else if (state == "Hold"){
+        } else if (states == "Down"){
+            intakePivotMotor.setPower(-0.5);
+        } else if (states == "Hold"){
             intakePivotMotor.setPower(0.2);
         }
     }
-
-    //sam this is the part you read
-    //vvvvvvvvvvvvvvvvvvvvvvvvvvvv
-
-
+    
     public void basket()
     {
+        intakePivotEncoders("Up");
+        sleep(400);
+        intakePivotMotor.setPower(0.0);
+        
+        driveEncoders(305);
+        
         leftEncoders(1220);
         turnLeft(135);
 
         //score start :o
         linearSlideEncoders(-3000);
-        while(slideArm.isBusy)
-        {
-        }
-        intakePivotEncoders("Up");
-        sleep(700);
+        slideMotor.setPower(-0.15);
+        intakePivotEncoders("Down");
+        sleep(500);
         intakePivotEncoders("Hold");
         intakeEncoders("Out");
-        sleep(500);
+        sleep(3000);
         intakeEncoders("Stop");
+        
+        intakePivotEncoders("Up");
+        sleep(3000);
+        backEncoders(500);
+        slideMotor.setPower(0.0);
         linearSlideEncoders(0);
-        while(slideArm.isBusy)
-        {
-        }
         //score end :)
 
-        turnRight(135);
-        rightEncoders(3050);
-        backEncoders(305);
+        // turnRight(135);
+        // rightEncoders(3050);
+        // backEncoders(405);
     }
 
     public void observation()
     {
+        intakePivotEncoders("Up");
+        sleep(400);
+        intakePivotMotor.setPower(0.0);
+        
+        driveEncoders(300);
         leftEncoders(1830);
         turnLeft(135);
 
         //score start :o
         linearSlideEncoders(-3000);
-        while(slideArm.isBusy)
-        {
-        }
-        intakePivotEncoders("Up");
-        sleep(700);
+        slideMotor.setPower(-0.15);
+
+        intakePivotEncoders("Down");
+        sleep(500);
         intakePivotEncoders("Hold");
         intakeEncoders("Out");
-        sleep(500);
+        sleep(3000);
         intakeEncoders("Stop");
+        
+        intakePivotEncoders("Up");
+        sleep(3000);
+        backEncoders(500);
+        slideMotor.setPower(0.0);
         linearSlideEncoders(0);
-        while(slideArm.isBusy)
-        {
-        }
+        
         //score end :)
         
         //score end
-        turnRight(135);
-        rightEncoders(3050);
-        backEncoders(305);
+        // turnRight(135);
+        // rightEncoders(3050);
+        // backEncoders(405);
     }
 }
+
+
+// for pull request main
