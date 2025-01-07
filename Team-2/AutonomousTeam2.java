@@ -223,12 +223,13 @@ public class AutonomousTeam2 extends LinearOpMode {
         intakeEncoders("Stop");
         
         intakePivotEncoders("Up");
-        sleep(2000);
+        sleep(5000);
         intakePivotMotor.setPower(0.0);
         slideArm.setPower(0.0);
         linearSlideEncoders(0);
         //score end :)
 
+        backEncoders(200);
         turnRight(135);
         rightEncoders(3050);
         backEncoders(305);
@@ -254,14 +255,14 @@ public class AutonomousTeam2 extends LinearOpMode {
         
         
         intakePivotEncoders("Up");
-        sleep(2000);
+        sleep(5000);
         intakePivotMotor.setPower(0.0);
         slideArm.setPower(0.0);
         linearSlideEncoders(0);
 
         //score end :)
         
-        //score end
+        backEncoders(200);        
         turnRight(135);
         rightEncoders(3050);
         backEncoders(305);
