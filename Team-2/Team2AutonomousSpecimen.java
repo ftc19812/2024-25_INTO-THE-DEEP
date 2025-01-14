@@ -192,3 +192,9 @@ public class AutonomousSutra extends LinearOpMode {
         }
     }
 }
+public void specimen()
+    {
+        
+    }
+
+   
