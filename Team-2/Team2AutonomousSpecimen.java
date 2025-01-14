@@ -194,6 +194,10 @@ public class AutonomousSutra extends LinearOpMode {
 }
 public void specimen()
     {
+        rightEncoders(610);
+        driveEncoders(1220);
+        rightEncoders(305);
+        backEncoders(1220);
         
     }
 
