@@ -198,7 +198,11 @@ public void specimen()
         driveEncoders(1220);
         rightEncoders(305);
         backEncoders(1220);
+        driveEncoders(100);
+        sleep(8000)
+        backEncoders(100);
         
+
     }
 
    
