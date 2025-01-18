@@ -289,11 +289,13 @@ public class Team2SpecimenAuto extends LinearOpMode {
         specMotor.setVelocity(1500);
         
         
-        while (opModeIsActive()&&specMotor.isBusy())
-        {
+        while (opModeIsActive() && Math.abs(specMotor.getCurrentPosition()) < ( Math.abs(specMotor.getTargetPosition())-10)){
+
         }
         
         specMotor.setPower(0.0);
+
+        
     }
     
     public void specIntake(String state){
