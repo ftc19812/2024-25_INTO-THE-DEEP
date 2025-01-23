@@ -145,6 +145,10 @@ public class Team2SpecimenAuto extends LinearOpMode {
 
     public void encoders(int leftFront, int rightFront, int leftBack, int rightBack)
     {
+        if (leftFront == 0 && rightFront == 0 && leftBack == 0 && rightBack == 0){
+            return;
+        }
+        
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -162,10 +166,10 @@ public class Team2SpecimenAuto extends LinearOpMode {
         
         double power=0.2;
         
-        leftFrontDrive.setVelocity(1500);
-        rightFrontDrive.setVelocity(1500);
-        leftBackDrive.setVelocity(1500);
-        rightBackDrive.setVelocity(1500);
+        leftFrontDrive.setVelocity(2000);
+        rightFrontDrive.setVelocity(2000);
+        leftBackDrive.setVelocity(2000);
+        rightBackDrive.setVelocity(2000);
         
         if(leftFront != 0){
             wheelForAutoFastMovement = leftFrontDrive;
@@ -176,11 +180,7 @@ public class Team2SpecimenAuto extends LinearOpMode {
         } else if(rightBack != 0){
             wheelForAutoFastMovement = rightBackDrive;
         } else {
-            // dumbass
-            // you fucking suck this shouldn't happen
-            // I HATE YOU SOFTWARE TEAM I HATE YOU YOU TOO NEW SOFTWARE TEAM - Sehwan homeless man
-            wheelForAutoFastMovement = slideArm;
-            // this is to specifically fuck with you useless member
+            return;
         }
         
         if(wheelForAutoFastMovement == leftFrontDrive){
@@ -242,10 +242,10 @@ public class Team2SpecimenAuto extends LinearOpMode {
         
         double power=0.2;
         
-        leftFrontDrive.setVelocity(3000);
-        rightFrontDrive.setVelocity(3000);
-        leftBackDrive.setVelocity(3000);
-        rightBackDrive.setVelocity(3000);
+        leftFrontDrive.setVelocity(5000);
+        rightFrontDrive.setVelocity(5000);
+        leftBackDrive.setVelocity(5000);
+        rightBackDrive.setVelocity(5000);
         
         
         while (opModeIsActive()&&leftFrontDrive.isBusy()||rightFrontDrive.isBusy()||leftBackDrive.isBusy()||rightBackDrive.isBusy())
@@ -284,18 +284,16 @@ public class Team2SpecimenAuto extends LinearOpMode {
         specMotor.setTargetPosition(goalPos);
         specMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         
-        double power=0.2;
+        double power=0.7;
         
-        specMotor.setVelocity(1500);
+        specMotor.setVelocity(4000);
         
         
-        while (opModeIsActive() && Math.abs(specMotor.getCurrentPosition()) < ( Math.abs(specMotor.getTargetPosition())-10)){
-
+        while (opModeIsActive()&&specMotor.isBusy())
+        {
         }
         
         specMotor.setPower(0.0);
-
-        
     }
     
     public void specIntake(String state){
@@ -339,36 +337,46 @@ public class Team2SpecimenAuto extends LinearOpMode {
     public void observation()
     {
         rightEncoders(300);   
-        backEncoders(650);
+        backEncoders(700);
         
         // score here, arm down via power while moving
-        specSlideEncoders(-4300);
+        specSlideEncoders(-4780);
+        backEncoders(200); //ram into bar
         specIntake("Outtake");
-        specSlideEncoders(-3000);
+        specSlideEncoders(-2000);
         specIntake("Hold"); //frankly call this whatevs
+        driveEncoders(220);
         
-        driveEncoders(100); //front - 50 = 550
-        leftEncoders(1500);
+        driveEncoders(100); //get away from sub
+        leftEncoders(1500); //move to human player, give them a lot of reaction time
         turnRight(180);
+        specSlideEncoders(-500); //up to grab
         backEncoders(500);
         
         // grab
+        specIntake("Intake");
+        backEncoders(100); //ram into the wall to ensure grabbing
+        sleep(2000); //let it grab
+        specIntake("Hold"); //frankly call this whatevs
+        specSlideEncoders(-3000);
         
+        driveEncoders(50); //get off the wall, dont scratch it
         leftEncoders(1500);
-        driveEncoders(100);
+        driveEncoders(70); //get further away, youre turning
         turnRight(180);
-        backEncoders(540);
+        backEncoders(580);
         
         // score again
         
-        specSlideEncoders(-4300);
+        specSlideEncoders(-4750);
+        backEncoders(200); //ram into bar
         specIntake("Outtake");
-        specSlideEncoders(-3000);
+        specSlideEncoders(0);
         specIntake("Hold"); //frankly call this whatevs
         
-        driveEncoders(100);
-        leftEncoders(500);
-        leftTopDiagonal(900);
+        driveEncoders(320); 
+        leftEncoders(500); //drive to setup the...
+        leftTopDiagonal(900); //park
     }
 
 }
